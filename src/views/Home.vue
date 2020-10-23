@@ -5,6 +5,7 @@
 
 <script>
 import api from '@/api/api';
+import { handleApi } from '@/utils.js';
 export default {
   name: 'Home',
   data() {
@@ -12,13 +13,17 @@ export default {
   },
 
   mounted() {
-    console.log(this.$store, api);
-    api.getUserInfo().then(res => {
-      console.log(`请求成功${JSON.stringify(res)}`, res);
-    });
+    this.getUserInfo();
   },
 
-  methods: {}
+  methods: {
+    async getUserInfo() {
+      const [err, res] = await handleApi(api.getUserInfo());
+      if (!err) {
+        console.log(res);
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>
