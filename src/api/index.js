@@ -1,12 +1,13 @@
-import axios from "axios";
-import config from "./../config";
-
-// const baseURL = baseConfig.baseURL;
+import axios from 'axios';
+import config from './../config';
+import qs from 'qs';
+import mock from './mock';
+const query = qs.parse(window.location.search.slice(1));
 const baseURL = config.baseURL;
 const instance = axios.create({
   baseURL: baseURL,
   timeout: 10 * 1000,
-  withCredentials: true,
+  withCredentials: true
 });
 // 添加请求拦截器
 instance.interceptors.request.use(
@@ -30,12 +31,12 @@ instance.interceptors.response.use(
       return response.data;
     } else {
       const { url, baseURL } = config;
-      let msg = `${config.method}:${url.replace(baseURL, "")}=>${data.message}`;
-      if (config.method === "post") {
+      let msg = `${config.method}:${url.replace(baseURL, '')}=>${data.message}`;
+      if (config.method === 'post') {
         msg += `::${config.data}`;
       }
       const error = Error(msg);
-      error.type = "api";
+      error.type = 'api';
       return Promise.reject(error);
     }
   },
@@ -44,4 +45,7 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+if (query.mock) {
+  mock(instance);
+}
 export default instance;

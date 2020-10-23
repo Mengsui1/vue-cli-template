@@ -23,7 +23,6 @@ function mock(ax) {
         console.log('::mock::', method, pathname, config.data, mockData[key]);
         return [200, mockData[key]];
       });
-
       return mo;
     }, mo)
     .onAny()
