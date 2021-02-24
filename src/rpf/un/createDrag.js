@@ -71,7 +71,10 @@ function createDrag(
   function onTouchStart(e) {
     hasStart = true;
     const touch = normalizeTouch(e);
-    prevTouch = touch;
+    prevTouch = {
+      clientX: touch.clientX,
+      clientY: touch.clientY
+    };
     dragging = true;
     velocity = { x: 0, y: 0 };
     onStart && onStart(e);
@@ -88,7 +91,10 @@ function createDrag(
       };
       velocity = moveDelta;
       onUpdate && onUpdate({ delta: moveDelta }, e);
-      prevTouch = touch;
+      prevTouch = {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      };
     }
   }
 
@@ -101,7 +107,10 @@ function createDrag(
     if (/^mouse/.test(e.type)) {
       dragging = false;
     } else if (touch) {
-      prevTouch = touch;
+      prevTouch = {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      };
     } else {
       dragging = false;
     }

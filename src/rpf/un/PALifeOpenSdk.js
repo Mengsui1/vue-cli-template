@@ -1,13 +1,5 @@
 import isPARS from './isPARS';
-import asyncLoadJs from './asyncLoadJS';
-// import qs from 'qs';
 import isWeChat from './isWeChat';
-const PALIFESDK_SCRIPT_SRC =
-  'https://elis-ecocdn.pingan.com.cn/lilith/lib/PALifeOpen.1.6.min.js';
-
-const PALIFEWEBSDK_SCRIPT_SRC = `https://elis-ecocdn.pingan.com.cn/m/cdn/PALifeOpenH5/1.2/PALifeOpenH5.min.js`;
-
-// const query = qs.parse(window.location.search.slice(1));
 
 let MOCK = {}; /* {
   getOpenId: {
@@ -53,8 +45,7 @@ class PALifeOpenSdk {
 
   async _initPALifeOpen() {
     if (!window.PALifeOpen) {
-      loadedPromise = asyncLoadJs(PALIFESDK_SCRIPT_SRC);
-      await loadedPromise;
+      throw Error('请先引入 PALifeOpen js 文件');
     }
     PALifeOpen = window.PALifeOpen;
     PALifeOpen.config();
@@ -62,8 +53,7 @@ class PALifeOpenSdk {
 
   async _initPALifeOpenH5({ debug = false, isProd = true } = {}) {
     if (!window.PALifeOpenH5) {
-      loadedWebSdkPromise = asyncLoadJs(PALIFEWEBSDK_SCRIPT_SRC);
-      await loadedWebSdkPromise;
+      throw Error('请先引入 PALifeOpenH5 js 文件');
     }
     PALifeOpenH5 = window.PALifeOpenH5;
     PALifeOpenH5.config({

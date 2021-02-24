@@ -1,3 +1,4 @@
+/* eslint-disable no-self-compare */
 const hasOwn = Object.prototype.hasOwnProperty;
 
 function is(A, B) {

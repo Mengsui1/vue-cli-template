@@ -1,5 +1,3 @@
-const oneVw = window.innerWidth / 100;
-
 function isValidNum(value) {
   return !isNaN(Number(value));
 }
@@ -13,6 +11,7 @@ function vwToPx(value) {
       'value is required and should be a number or value can be parsed by Number()'
     );
   }
+  const oneVw = window.innerWidth / 100;
   return Math.round(oneVw * Number(value));
 }
 

@@ -10,18 +10,17 @@ function vw(px, base = 750, unit = true) {
   return (Math.round(px) / base) * 100 + (unit ? 'vw' : '');
 }
 
-function getImgSysPath(baseUrl, filePath) {
+function getImgSysPath(baseUrl, filePath, root) {
+  if (/^\./.test(filePath)) {
+    return path.resolve(path.dirname(root.source.input.file), filePath);
+  }
   /* 
-    ./path/to/img.png
-    ../../path/to/img.png
     ~@/path/to/img.png (vue-cli alias)
     ~path/to/img.png (cra with jsconfig)
     =>
     path/to/img.png
    */
-  const fixedPath = filePath
-    .replace(/(\.{1,2})+\//g, '')
-    .replace(/^~?@?\/?/, '');
+  const fixedPath = filePath.replace(/^~?@?\/?/, '');
   return path.resolve(process.cwd(), baseUrl, fixedPath);
 }
 
@@ -41,11 +40,12 @@ module.exports = postcss.plugin(
           if (/^url\(/.test(decl.value)) {
             const bgUrlValue = getBgUrlValue(decl.value);
             if (!/^http/.test(bgUrlValue) && !/^data:/.test(bgUrlValue)) {
-              const size = imagesize(getImgSysPath(baseUrl, bgUrlValue));
+              const size = imagesize(getImgSysPath(baseUrl, bgUrlValue, root));
               const hasBgRepeat = hasProp('background-repeat', rule);
               const hasBgSize = hasProp('background-size', rule);
               const hasWidth = hasProp('width', rule);
               const hasHeight = hasProp('height', rule);
+
               if (!hasBgRepeat) {
                 rule.append({
                   prop: 'background-repeat',

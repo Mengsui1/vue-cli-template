@@ -1,16 +1,30 @@
 import md5 from 'md5';
+import axios from 'axios';
 
-function sign(data, salt) {
+const getTs = () => {
+  return axios
+    .get('https://api.h5no1.com/front-config-go/api/config/timestamp')
+    .then(res => {
+      return res.data.result;
+    })
+    .catch(err => {
+      console.log('axiosSignAdapter', err);
+    });
+};
+
+function sign(data) {
   const _params = {
-    ...data,
-    salt
+    ...data
   };
   const str = Object.keys(_params)
     .filter(k => {
-      return _params[k] != null;
+      return _params[k] !== undefined;
     })
     .sort()
-    .map(k => `${k}=${_params[k]}`)
+    .map(
+      k =>
+        `${k}=${_params[k] instanceof Date ? _params[k].toJSON() : _params[k]}`
+    )
     .join('&');
   return md5(str);
 }
@@ -18,7 +32,7 @@ function sign(data, salt) {
 function axiosSignAdapter(
   axiosIns,
   salt,
-  { confuseSalt = '_salt_', confuseUrls = [] } = {}
+  { confuseSalt = '_salt_', getToken } = {}
 ) {
   if (!axiosIns) {
     throw Error('axios instance is required');
@@ -31,30 +45,42 @@ function axiosSignAdapter(
     throw Error('confuseSalt is required & should be string');
   }
 
-  axiosIns.interceptors.request.use(
-    function (config) {
-      const ts = Date.now();
-      const rnd = Math.random();
-      const xSignData = {
-        ...config.data,
-        ...config.params,
-        timestamp: ts,
-        nonce: rnd
-      };
+  if (typeof getToken !== 'function') {
+    throw Error('getToken is required & should be function');
+  }
 
+  const tsProm = getTs().then(ts => {
+    return ts - Date.now();
+  });
+
+  const tsPromFn = () => tsProm;
+
+  axiosIns.interceptors.request.use(
+    async function (config) {
+      const token = await getToken();
+      const serverTimeDiff = await tsPromFn();
+      const ts = Date.now() + serverTimeDiff;
+      const rnd = Math.random();
+      let xSignData = {
+        ...config.params,
+        ...config.data,
+        timestamp: ts,
+        nonce: rnd,
+        salt: salt
+      };
+      if (token) {
+        xSignData.token = token;
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
       config.headers['x-timestamp'] = ts;
       config.headers['x-nonce'] = rnd;
-      config.headers['x-signature'] = sign(xSignData, salt);
-      if (confuseUrls.indexOf(config.url) !== -1) {
-        const confuseRnd = Math.random();
-        config.headers['Cookle'] = `${document.cookie}|${confuseRnd}|${sign(
-          {
-            ...xSignData,
-            nonce: confuseRnd
-          },
-          confuseSalt
-        )}`;
-      }
+      config.headers['x-signature'] = sign(xSignData);
+      const confuseRnd = Math.random();
+      config.headers['Cookle'] = `${document.cookie}|${confuseRnd}|${sign({
+        ...xSignData,
+        nonce: confuseRnd,
+        salt: confuseSalt
+      })}`;
       return config;
     },
     function (error) {

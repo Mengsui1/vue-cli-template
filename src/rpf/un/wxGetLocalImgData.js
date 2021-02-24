@@ -1,8 +1,11 @@
 function wxGetLocalImgData({ localId }) {
+  if (!localId) {
+    throw Error('wxGetLocalImgData: localId is required');
+  }
   return new Promise(resolve => {
     window.wx.getLocalImgData({
       localId,
-      success: function(res) {
+      success: function (res) {
         if (!/^data:image/.test(res.localData)) {
           res.localData = 'data:image/jgp;base64,' + res.localData; // IT IS `jgp`, BUT WORKS
         }

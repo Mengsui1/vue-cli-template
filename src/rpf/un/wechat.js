@@ -251,11 +251,11 @@ function wechat({
       debug = false,
       jsApiList = [
         'checkJsApi',
+        'chooseImage',
         'onMenuShareTimeline',
-        'onMenuShareAppMessage',
-        'onMenuShareQQ',
-        'onMenuShareWeibo'
-      ]
+        'onMenuShareAppMessage'
+      ],
+      openTagList = []
     } = {}) => {
       if (!jsApi.appid) {
         throw Error('未提供 jsApi.appid');
@@ -283,7 +283,8 @@ function wechat({
               timestamp: data.timestamp,
               nonceStr: data.nonceStr,
               signature: data.signature,
-              jsApiList: jsApiList
+              jsApiList: jsApiList,
+              openTagList: openTagList
             });
           }
           return res.data;

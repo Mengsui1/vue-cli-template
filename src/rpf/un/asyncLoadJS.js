@@ -1,4 +1,4 @@
-export default url =>
+const asyncLoadJS = url =>
   new Promise((resolve, reject) => {
     const hasLoaded = document.querySelector('script[src="' + url + '"]');
     hasLoaded && resolve();
@@ -9,3 +9,4 @@ export default url =>
     script.onload = resolve;
     script.onerror = reject;
   });
+export default asyncLoadJS;

@@ -10,25 +10,30 @@
       playsinline
       mtt-playsinline
       :poster="firstFrame"
+      :controls="controls"
       @play="_play"
       @pause="_pause"
       @ended="_ended"
     />
-    <img
+    <div
       v-if="env.android"
       :class="{
         frame: true,
         show: frame === 'first'
       }"
-      :src="firstFrame"
+      :style="{
+        backgroundImage: `url('${firstFrame}')`
+      }"
       @click.prevent
     />
-    <img
+    <div
       :class="{
         frame: true,
         show: frame === 'last'
       }"
-      :src="lastFrame"
+      :style="{
+        backgroundImage: `url('${lastFrame}')`
+      }"
       @click.prevent
     />
     <slot></slot>
@@ -67,6 +72,10 @@ export default {
     },
     src: {
       type: String
+    },
+    controls: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -185,6 +194,8 @@ export default {
   border: 0;
   pointer-events: none;
   opacity: 0;
+  background-size: 100%;
+  background-repeat: no-repeat;
   /* visibility: hidden; */
 }
 .h5v-wrap > .frame.show {

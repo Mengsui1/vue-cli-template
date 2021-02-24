@@ -1,18 +1,18 @@
 <template>
   <div>
-    <select :value="value[0]" @change="_change(0, $event)">
+    <select :value="value[0]" @change="_changeProvince">
       <option :value="null">（省）</option>
       <option v-for="item in provinceData" :value="item.name" :key="item.name">
         {{ item.name }}
       </option>
     </select>
-    <select v-if="level > 1" :value="value[1]" @change="_change(1, $event)">
+    <select v-if="level > 1" :value="value[1]" @change="_changeCity">
       <option :value="null">（市）</option>
       <option v-for="item in cityData" :value="item.name" :key="item.name">
         {{ item.name }}
       </option>
     </select>
-    <select v-if="level > 2" :value="value[2]" @change="_change(2, $event)">
+    <select v-if="level > 2" :value="value[2]" @change="_changeRegion">
       <option :value="null">（区）</option>
       <option v-for="item in regionData" :value="item.name" :key="item.name">
         {{ item.name }}
@@ -88,15 +88,22 @@ export default {
     }
   },
   methods: {
-    _change(i, e) {
-      const tVal = e.target.value;
-      const [province, city] = this.value;
-      const nextValue = [
-        [tVal, '', ''],
-        [province, tVal, ''],
-        [province, city, tVal]
-      ];
-      this.$emit('input', nextValue[i]);
+    _changeProvince(e) {
+      const { value } = e.target;
+      const cityData = data.filter(item => item.parent === value);
+      this.$emit('input', cityData.length ? [value, ''] : [value]);
+    },
+    _changeCity(e) {
+      const { value } = e.target;
+      const regionData = data.filter(item => item.parent === value);
+      this.$emit(
+        'input',
+        regionData.length ? [this.value[0], value, ''] : [this.value[0], value]
+      );
+    },
+    _changeRegion(e) {
+      const { value } = e.target;
+      this.$emit('input', [this.value[0], this.value[1], value]);
     }
   }
 };

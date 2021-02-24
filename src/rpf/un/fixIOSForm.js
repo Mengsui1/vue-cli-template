@@ -21,6 +21,7 @@ function isUnstableElem(elem) {
     const type = elem.getAttribute && elem.getAttribute('type');
     return (
       ['select', 'textarea'].indexOf(tagName) !== -1 ||
+      (!type && tagName === 'input') ||
       (tagName === 'input' &&
         [
           'color',

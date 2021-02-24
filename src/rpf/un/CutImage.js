@@ -179,6 +179,9 @@ class CutImage {
           this.cutCtx.closePath();
           this.cutCtx.restore();
           this.cutCtx.clip();
+          break;
+        default:
+          break;
       }
     } else if (Array.isArray(this.cutShape)) {
       this.cutCtx.save();

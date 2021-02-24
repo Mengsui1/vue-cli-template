@@ -3,6 +3,8 @@ import isCrossOrigin from './isCrossOrigin';
 function urlToBlob({
   url,
   maxWidth,
+  type,
+  quality,
   crossOriginValue = 'anonymous', // use-credentials
   appendToDOM
 } = {}) {
@@ -56,9 +58,13 @@ function urlToBlob({
         );
       } else {
         try {
-          canvas.toBlob(bin => {
-            resolve(bin);
-          });
+          canvas.toBlob(
+            bin => {
+              resolve(bin);
+            },
+            type,
+            quality
+          );
         } catch (err) {
           reject(err);
         }

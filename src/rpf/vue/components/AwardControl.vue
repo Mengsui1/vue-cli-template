@@ -1,22 +1,21 @@
-
 <!-- 
 一 、 操作方式及相关参数解析
-1、点击操作-修改，列表变成可编辑状态,可编辑状态可以修改‘概率分子’、‘人工干预’、‘人工干预数量’。
-2、概率分子rate：可编辑，接受0~无限大的数字
-3、概率分母denominator：概率分母=有效的概率分子之和
-4、无效概率分子：	满足一下任意条件即为无效概率分子，其余情况视为有效分子
-     1、概率分子为0
-     2、人工干预开启且干预数量为0
+1、点击操作-修改，列表变成可编辑状态,可编辑状态可以修改‘权重’、‘是否人工控制发放’、‘实际可发放数量’。
+2、权重rate：可编辑，接受0~无限大的数字
+3、权重总和denominator：权重总和=有效的权重之和
+4、无效权重：	满足一下任意条件即为无效权重，其余情况视为有效权重
+     1、权重为0
+     2、是否人工控制发放开启且实际可发放数量为0
      3、奖品剩余数量为0
 4、中奖概率probability：
-      1、有效分子/分母，保持两位小数点
-      2、无效概率分子项的概率为0
+      1、有效权重/权重总和，保持两位小数点
+      2、无效权重的概率为0
 5、所有的概率相加等于100%
-6、人工干预is_manual：可编辑，switch 开关,开启时为人工干预状态。
-7、人工干预数量manual_amount：可编辑，接受最小为0的数字，必须大于等于剩余数量。
-8、人工干预开启时，奖品只会按照人工干预的数量发放，不会超发;人工干预数量发完，可以重新设置。
+6、人工控制发放is_manual：可编辑，switch 开关,开启时为人工控制发放状态。
+7、实际可发放数量manual_amount：可编辑，接受最小为0的数字，必须大于等于剩余数量。
+8、是否人工控制发放开启时，奖品只会按照实际可发放数量发放，不会超发;实际可发放数量发完，可以重新设置。
 9、奖品剩余数量rest_amount 
---> 
+-->
 
 <template>
   <section>
@@ -40,13 +39,52 @@
         min-width="50"
         align="center"
       ></el-table-column>
-      <el-table-column label="概率分母" min-width="50" align="center">
+
+      <el-table-column min-width="50" align="center">
+        <template slot="header">
+          中奖概率
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="中奖概率：权重/总权重"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
+        <template slot-scope="prop">
+          <span>
+            {{ probabilityArray[prop.$index] + '%' }}
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column min-width="50" label="权重总和" align="center">
+        <template slot="header">
+          权重总和
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="权重总和=各项有限权重之和"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
         <template>
           {{ denominator }}
         </template>
       </el-table-column>
 
-      <el-table-column label="概率分子" min-width="50" align="center">
+      <el-table-column min-width="50" align="center">
+        <template slot="header">
+          权重
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="中奖的权重：数字越大，概率越大"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
         <template slot-scope="prop">
           <span v-if="!prop.row.is_modify">
             {{ prop.row.rate }}
@@ -58,14 +96,17 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="中奖概率" min-width="50" align="center">
-        <template slot-scope="prop">
-          <span>
-            {{ probabilityArray[prop.$index] + '%' }}
-          </span>
+      <el-table-column min-width="50" align="center">
+        <template slot="header">
+          是否人工控制发放
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="用于防止奖品瞬间被抽奖。开启后，当'实际可发放数量'为0时，奖品的中奖概率变成0；"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
         </template>
-      </el-table-column>
-      <el-table-column label="人工干预" min-width="50" align="center">
         <template slot-scope="prop">
           <el-switch
             v-model="prop.row.is_manual"
@@ -75,7 +116,17 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="人工干预数量" min-width="50" align="center">
+      <el-table-column min-width="50" align="center">
+        <template slot="header">
+          实际可发放数量
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="每被抽走一个奖品， 实际可发放数量减1，到0为止；可随时调整此值；"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
         <template slot-scope="prop">
           <span v-if="!prop.row.is_modify">{{ prop.row.manual_amount }}</span>
           <el-input
@@ -85,12 +136,7 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column
-        label="操作"
-        min-width="100"
-        align="center"
-        fixed="right"
-      >
+      <el-table-column label="操作" min-width="50" align="center" fixed="right">
         <template slot-scope="prop">
           <el-button v-if="!prop.row.is_modify" @click="modify(prop.$index)">
             修改
@@ -101,6 +147,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <a
+      target="_blank"
+      href="https://www.yuque.com/docs/share/a05e545f-1c09-4f46-9b87-3732351ed357?# 《人工干预管理后台规则》"
+    >
+      详细规则
+    </a>
   </section>
 </template>
 
@@ -122,7 +174,10 @@ export default {
     }
   },
   computed: {
-    // 概率分母
+    /**
+     *@type {number}
+     *@summary 权重总和
+     */
     denominator() {
       return this.tableData.reduce((accumulator, item) => {
         let rate;
@@ -131,7 +186,7 @@ export default {
           item.rest_amount <= 0
         ) {
           /**
-           1、人工干预开启且人工干预数量为0时
+           1、是否人工控制发放开启且实际可发放数量为0时
            2、奖品剩余数量为0时
            以上2种情况，不会抽到奖品，返回0
           */
@@ -141,19 +196,19 @@ export default {
           rate = item.rate;
         }
 
-        // 概率分子叠加，总和为概率分母
+        // 权重相加
         return (accumulator += rate);
       }, 0);
     },
 
     /**
-     *@type {Array}
+     *@type {number[]}
      *@summary 每项代表每个奖品的中奖概率
      */
     probabilityArray() {
       return this.tableData.map(item => {
         if (this.denominator === 0) {
-          // 概率分母为0时，每个奖品的中奖概率为0
+          // 权重总和为0时，每个奖品的中奖概率为0
 
           return 0;
         }
@@ -165,8 +220,8 @@ export default {
           item.rest_amount <= 0
         ) {
           /**
-           * 1、概率分子为0
-           * 2、人工干预且干预数量为0
+           * 1、权重为0
+           * 2、‘人工控制发放’开启且‘实际可发放数量’为0
            * 3、奖品剩余数量为0
            * 以上3种情况，此奖品的中奖概率为0
            */

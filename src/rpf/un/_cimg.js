@@ -21,7 +21,7 @@ function checkPkg(pkgPath) {
     const pkgName = path.basename(pkgPath);
     console.log('缺少全局', pkgName);
     console.log('请先运行', `npm i -g ${pkgName}`);
-    process.exit(0);
+    process.exit(1);
   }
 }
 
@@ -49,11 +49,11 @@ const args = parseArgv(process.argv);
 
 if (!args.path) {
   console.log('缺少 path 参数，--path=path/to/images');
-  process.exit(0);
+  process.exit(1);
 }
 if (path.isAbsolute(args.path)) {
   console.log('为了安全，path 参数必须是相对路径');
-  process.exit(0);
+  process.exit(1);
 }
 
 const compressPath = path.resolve(process.cwd(), args.path);
@@ -101,7 +101,7 @@ imagemin([targetDir + '/**/*.{jpg,png}'], {
       progressive: false
     }),
     pngquant({
-      quality: [0.6, 0.8]
+      quality: [0.8, 1]
     })
   ]
 }).then(files => {
