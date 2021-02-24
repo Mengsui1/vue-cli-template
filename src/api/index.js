@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from './../config';
+import config from './../config/index.js';
 import qs from 'qs';
 import mock from './mock';
 const query = qs.parse(window.location.search.slice(1));
