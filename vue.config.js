@@ -9,11 +9,13 @@ module.exports = {
       scss: {
         // 传入全局共享变量
         // additionalData
-        // sass-loader v8.0.0+, use `data:` for elder version
-        // prependData: `@import "~@/assets/css/index.scss";`,
+        // additionalData: `@import "~@/assets/css/index.scss"`
+        // sass-loader v8.0.0+, use `data:` for elder version prependData
+        additionalData: `@import "~@/assets/css/index.scss";`
       }
     }
   },
+  lintOnSave: true,
   chainWebpack: config => {
     config.module
       .rule('images')

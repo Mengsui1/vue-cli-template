@@ -4,7 +4,8 @@ import App from './App.vue';
 import router from './router';
 import store from './store/index';
 
-import '@/assets/css/index.scss';
+import '@/plugins/vf-model/index.js';
+import '@/plugins/autoRegisterComponent';
 
 Vue.config.productionTip = false;
 

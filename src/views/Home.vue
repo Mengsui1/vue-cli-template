@@ -4,25 +4,21 @@
 </template>
 
 <script>
-import api from '@/api/api';
-import { handleApi } from '@/utils.js';
 export default {
   name: 'Home',
   data() {
     return {};
   },
 
-  mounted() {
+  async mounted() {
     this.getUserInfo();
+    await this.$modal({
+      type: 'test'
+    });
   },
 
   methods: {
-    async getUserInfo() {
-      const [err, res] = await handleApi(api.getUserInfo());
-      if (!err) {
-        console.log(res);
-      }
-    }
+    async getUserInfo() {}
   }
 };
 </script>

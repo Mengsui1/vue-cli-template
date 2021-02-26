@@ -2,12 +2,23 @@ import axios from 'axios';
 import config from './../config/index.js';
 import qs from 'qs';
 import mock from './mock';
+import axiosSignAdapter from '@/rpf/un/axiosSignAdapter';
+import { setToken, getToken } from '@/utils/token.js';
+import getQuery from '@/rpf/un/getQuery';
+
 const query = qs.parse(window.location.search.slice(1));
 const baseURL = config.baseURL;
+
 const instance = axios.create({
   baseURL: baseURL,
   timeout: 10 * 1000,
   withCredentials: true
+});
+axiosSignAdapter(instance, 'nSzVdzGI46xjQjcQUfvPT0z0TiEzLc7c', {
+  confuseSalt: '9K1x6ierpHX0bl2XfQYqxpiI5KabVwR7',
+  getToken: async () => {
+    // return getToken();
+  }
 });
 // 添加请求拦截器
 instance.interceptors.request.use(
@@ -20,7 +31,6 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
 // 添加响应拦截器
 instance.interceptors.response.use(
   function(response) {

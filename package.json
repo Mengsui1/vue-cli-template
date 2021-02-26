@@ -12,9 +12,11 @@
     "prod": "cross-env VUE_APP_ENV=prod npm run build && charon publish prod"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.0.0-rc.2",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "qs": "^6.9.4",
+    "ramda": "^0.27.1",
     "vue": "^2.6.11",
     "vue-router": "^3.4.7",
     "vuex": "^3.5.1"

@@ -1,0 +1,139 @@
+@function vw($x, $vpw: 750) {
+  @return ($x / $vpw * 100) * 1vw;
+}
+@mixin center {
+  margin: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+@mixin bgcenter {
+  margin: auto;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+@mixin bgimage($url) {
+  background-image: url($url);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+@mixin wh($width, $height) {
+  width: vw($width);
+  height: vw($height);
+}
+
+@mixin lt($left, $top) {
+  position: absolute;
+  left: vw($left);
+  top: vw($top);
+}
+
+@mixin lb($left, $bottom) {
+  position: absolute;
+  left: vw($left);
+  bottom: vw($bottom);
+}
+
+@mixin rt($right, $top) {
+  position: absolute;
+  right: vw($right);
+  top: vw($top);
+}
+
+@mixin rb($right, $bottom) {
+  position: absolute;
+  right: vw($right);
+  bottom: vw($bottom);
+}
+
+@mixin ct($top) {
+  margin: auto;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: vw($top);
+}
+
+@mixin cb($bottom) {
+  margin: auto;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: vw($bottom);
+}
+
+@mixin fct($top) {
+  margin: auto;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: vw($top);
+}
+
+@mixin fcb($bottom) {
+  margin: auto;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  bottom: vw($bottom);
+}
+@mixin text_hide() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cover {
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  width: vw(750);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  &-err {
+    z-index: 15;
+    background: rgba(0, 0, 0, 0.7);
+    width: vw(750);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+}
+.cbg {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+.safe-area {
+  width: 100%;
+  height: vw(1206);
+  position: relative;
+}
+
+@media (min-aspect-ratio: 750 / 1206) {
+  .safe-area {
+    height: 100%;
+  }
+}
+
+// 文字省略,$x:行数
+@mixin textOverflow($x) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-break: break-all;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $x;
+}
