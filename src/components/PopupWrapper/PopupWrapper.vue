@@ -30,6 +30,8 @@ export default {
 .popup-wrapper {
   @include bgcenter;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
   &-container {
     @include center;
     transition: all 0.5s;

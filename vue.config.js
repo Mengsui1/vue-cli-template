@@ -1,5 +1,6 @@
 const pack = require('./package.json');
 module.exports = {
+  transpileDependencies: [/.*vf-modal.*/],
   publicPath:
     process.env.VUE_APP_ENV === 'prod'
       ? `https://cdn2.h5no1.com/${pack.name}/`
@@ -31,5 +32,9 @@ module.exports = {
         options.limit = 1;
         return options;
       });
+    config.plugin('html').tap(args => {
+      args[0].title = '种草鸭四期';
+      return args;
+    });
   }
 };
